@@ -6,12 +6,12 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 	protected $_forcedefault=array("store"=>"admin");
 	protected $_missingcols=array();
 	protected $_missingattrs=array();
-	
+
 	public function initialize($params)
 	{
 		$this->registerAttributeHandler($this,array("attribute_code:.*"));
 	}
-	
+
 	public function getPluginInfo()
 	{
 		return array(
@@ -20,9 +20,9 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
             "version" => "1.0.6"
             );
 	}
-	
+
 	public function processColumnList(&$cols)
-	{	
+	{
 		$this->_missingcols=array_diff(array_keys($this->_basecols),$cols);
 		$this->_missingattrs=array_diff(array_keys($this->_baseattrs),$cols);
 		$m=$this->getMode();
@@ -32,8 +32,8 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 			$this->log("Newly created items will have default values for columns:".implode(",",array_merge($this->_missingcols,$this->_missingattrs)),"startup");
 		}
 	}
-	
-	
+
+
 	public function initializeBaseCols(&$item)
 	{
 		foreach($this->_missingcols as $missing)
@@ -41,7 +41,7 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 			$item[$missing]=$this->_basecols[$missing];
 		}
 	}
-	
+
 	public function initializeBaseAttrs(&$item)
 	{
 		foreach($this->_missingattrs as $missing)
@@ -49,8 +49,8 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 			$item[$missing]=$this->_baseattrs[$missing];
 		}
 	}
-	
-	
+
+
 
 	public function processItemAfterId(&$item,$params=null)
 	{
@@ -59,7 +59,7 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 			$this->initializeBaseCols($item);
 			$this->initializeBaseAttrs($item);
 		}
-		//forcing default values for mandatory processing columns 
+		//forcing default values for mandatory processing columns
 		foreach($this->_forcedefault as $k=>$v)
 		{
 			if(isset($item[$k]) && trim($item[$k])=="")
@@ -69,7 +69,7 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 		}
 		return true;
 	}
-	
+
 	/**
 	 * attribute handler for decimal attributes
 	 * @param int $pid	: product id
@@ -109,9 +109,9 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 	public function handleTextAttribute($pid,&$item,$storeid,$attrcode,$attrdesc,$ivalue)
 	{
 		$ovalue=deleteifempty($ivalue);
-		return $ovalue;	
+		return $ovalue;
 	}
-	
+
 	public function checkInt($value)
 	{
 		return is_int($value) || (is_string($value) && is_numeric($value) && (int)$value==$value);
@@ -151,7 +151,7 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 					if(!$this->checkInt($ivalue)){
 						$ovalue=4;
 					}
-					
+
 					break;
 					//if it's tax_class, get tax class id from item value
 				case "tax/class_source_product":
@@ -177,7 +177,7 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 
 	public function handleUrl_keyAttribute($pid,&$item,$storeid,$attrcode,$attrdesc,$ivalue)
 	{
-		
+
 		$cpev=$this->tablename("catalog_product_entity_varchar");
 		//find conflicting url keys
 		$urlk=trim($ivalue);
@@ -201,12 +201,14 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 			//no current value, so try inserting into target pattern list
 			else
 			{
-				
+
 				$sql="SELECT * FROM $cpev WHERE attribute_id=? AND entity_id!=?  AND value REGEXP ?";
 				$umatch=$urlk."(-\d+)?";
 			}
+			// chAnGe: Moved this assignment one level up >>>
+			$lst = $this->selectAll($sql,array($attrdesc["attribute_id"],$pid,$umatch));
+			// <<< chAnGe
 		}
-		$lst=$this->selectAll($sql,array($attrdesc["attribute_id"],$pid,$umatch));
 		//all conflicting url keys
 		if(count($lst)>0)
 		{
@@ -232,7 +234,7 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 		{
 			return "__MAGMI_DELETE__";
 		}
-		
+
 		$ovalue=$ivalue;
 		$attid=$attrdesc["attribute_id"];
 		//--- Contribution From mennos , optimized by dweeves ----
@@ -253,8 +255,8 @@ class Magmi_DefaultAttributeItemProcessor extends Magmi_ItemProcessor
 			$ovalue=implode(",",$oids);
 			unset($oids);
 		}
-	
-		
+
+
 		return $ovalue;
 	}
 
