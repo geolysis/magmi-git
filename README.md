@@ -3,7 +3,7 @@ magmi-git
 
 The Official GitHub home for magmi  project (Magento Mass Importer) is `dweeves/magmi-git`.
 
-Included are a few fixes and tweaks.
+Included are a few fixes and tweaks. (Marked with `chAnGe` keyword)
 
 Tweaks
 ------
