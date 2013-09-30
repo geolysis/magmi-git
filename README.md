@@ -9,4 +9,4 @@ Tweaks
 ------
 
 * Website ordering: getItemWebsites delivers now an ordered list (based on the `websites` field in the importer)
-* Multi-website functionality of tierprices: (comma separated list of semicolon separated tierprices - based on `websites`)
+* Multi-website functionality of tierprices: (pipe (|) separated list of semicolon separated tierprices - based on `websites`)
