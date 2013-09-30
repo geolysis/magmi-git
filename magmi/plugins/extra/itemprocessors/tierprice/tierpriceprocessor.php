@@ -7,9 +7,13 @@
  */
 class TierpriceProcessor extends Magmi_ItemProcessor
 {
+
+	CONST WEBSITES_SEPARATOR = '|';
+
 	protected $_tpcol=array();
-    protected $_singlestore=0;
-    protected $__pricescope=2;
+	protected $_singlestore=0;
+	protected $__pricescope=2;
+
 
 	public function getPluginInfo()
 	{
@@ -114,7 +118,7 @@ class TierpriceProcessor extends Magmi_ItemProcessor
 			}
 
 			// chAnGe: Multi-website functionality >>>
-			$tierPriceValuesPerWebsite = strtok($item[$k], ',');
+			$tierPriceValuesPerWebsite = strtok($item[$k], self::WEBSITES_SEPARATOR);
 			foreach ($wsids as $wsid) {
 
 				if (!$tierPriceValuesPerWebsite) {
@@ -125,7 +129,7 @@ class TierpriceProcessor extends Magmi_ItemProcessor
 					// <<< chAnGe
 					foreach ($tpvals as $tpval) {
 						//split on ":"
-									$tpvinf=explode(":",$tpval);
+						$tpvinf=explode(":", $tpval);
 						//if we have only one item
 						if(count($tpvinf)==1)
 						{
@@ -133,8 +137,8 @@ class TierpriceProcessor extends Magmi_ItemProcessor
 							array_unshift($tpvinf,1.0);
 						}
 						//if more thant 1, qty first,price second
-						$tpquant=$tpvinf[0];
-						$tpprice=str_replace(",",".",$tpvinf[1]);
+						$tpquant = $tpvinf[0];
+						$tpprice = (float) str_replace(",", ".", $tpvinf[1]);
 						if($tpprice=="")
 						{
 							continue;
@@ -147,8 +151,8 @@ class TierpriceProcessor extends Magmi_ItemProcessor
 								$this->warning("No price define, cannot apply % on tier price");
 								continue;
 							}
-							$fp=(float)(str_replace(",",".",$item["price"]));
-							$pc=(float)(substr($tpprice,0,-1));
+							$fp = (float) str_replace(",",".",$item["price"]);
+							$pc = (float) substr($tpprice,0,-1);
 							$m=($pc<0?(100+$pc):$pc);
 							$tpprice=strval(($fp*($m))/100.0);
 						}
@@ -162,7 +166,7 @@ class TierpriceProcessor extends Magmi_ItemProcessor
 						$data[]=$wsid;
 					}
 					// chAnGe: Multi-website functionality >>>
-					$tierPriceValuesPerWebsite = strtok(',');
+					$tierPriceValuesPerWebsite = strtok(self::WEBSITES_SEPARATOR);
 				}
 			// <<< chAnGe
 			}
