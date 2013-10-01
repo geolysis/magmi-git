@@ -357,9 +357,8 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 	public function getProductIds($sku)
 	{
 		$tname=$this->tablename("catalog_product_entity");
-		$result=$this->selectAll(
-		"SELECT sku,entity_id as pid,attribute_set_idas asid,type_id as type FROM $tname WHERE sku=?",
-		$sku);
+		$sql = "SELECT sku, entity_id as pid, attribute_set_id as asid, type_id as type FROM $tname WHERE sku = ?";
+		$result = $this->selectAll($sql, $sku);
 		if(count($result)>0)
 		{
 			$pids= $result[0];
