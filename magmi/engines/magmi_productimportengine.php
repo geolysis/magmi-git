@@ -1123,9 +1123,9 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 					if (count($rows) == 1) {
 						$this->_wsids[$item["websites"]][] = $rows[0]['website_id'];
 					}elseif (count($rows) == 0) {
-						throw Exception('No matching website code ('.$websiteCode.') in the import file.');
+						throw new Exception('No matching website code ('.$websiteCode.') in the import file.');
 					}else{
-						throw Exception('Abiguous website code in the import file.');
+						throw new Exception('Abiguous website code in the import file.');
 					}
 				}
 				// <<< chAnGe

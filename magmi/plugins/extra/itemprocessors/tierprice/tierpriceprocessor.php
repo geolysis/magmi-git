@@ -122,7 +122,7 @@ class TierpriceProcessor extends Magmi_ItemProcessor
 			foreach ($wsids as $wsid) {
 
 				if (!$tierPriceValuesPerWebsite) {
-					throw Exception('Not enough of multi-website tier prices in the tier price column '.$k);
+					throw new Exception('Not enough of multi-website tier prices in the tier price column '.$k);
 				}else{
 
 					$tpvals = explode(';', $tierPriceValuesPerWebsite);
