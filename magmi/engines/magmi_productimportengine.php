@@ -240,7 +240,7 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 				//SQL for selecting attribute properties for all wanted attributes
 				$sql="SELECT `$tname`.*,$extra.is_global,$extra.apply_to FROM `$tname`
 				LEFT JOIN $extra ON $tname.attribute_id=$extra.attribute_id
-				WHERE($tname.attribute_code IN ($qcolstr)) AND (entity_type_id=?)";
+				WHERE ($tname.attribute_code IN ($qcolstr)) AND (entity_type_id=?)";
 			}
 			else
 			{
@@ -292,7 +292,7 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 			$this->attrinfo[$k]=null;
 		}
 		/*now we have 2 index arrays
-		 1. $this->attrinfowhich has the following structure:
+		 1. $this->attrinfo which has the following structure:
 		 key : attribute_code
 		 value : attribute_properties
 		 2. $this->attrbytype which has the following structure:
@@ -422,7 +422,7 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 		$t2=$this->tablename('eav_attribute_option_value');
 		$sql="SELECT optvals.option_id as opvs,optvals.value FROM $t2 as optvals";
 		$sql.=" JOIN $t1 as opt ON opt.option_id=optvals.option_id AND opt.attribute_id=?";
-		$sql.=" WHERE optvals.store_id=? AND BINARY optvals.value IN($ovstr)";
+		$sql.=" WHERE optvals.store_id=? AND BINARY optvals.value IN ($ovstr)";
 		return $this->selectAll($sql,array_merge(array($attid,$store_id),$optvals));
 	}
 
@@ -441,10 +441,11 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 	 * @param mixed $optval : new option value to add
 	 * @return : option id for new created value
 	 */
-	public function createOptionValue($optid,$store_id,$optval)
+	public function createOptionValue($optid,$store_id, $optval)
 	{
-		$t=$this->tablename('eav_attribute_option_value');
-		$optval_id=$this->insert("INSERT INTO $t (option_id,store_id,value) VALUES (?,?,?)",array($optid,$store_id,$optval));
+		$t = $this->tablename('eav_attribute_option_value');
+		$sql = "INSERT INTO $t (option_id,store_id,value) VALUES (?,?,?)";
+		$optval_id = $this->insert($sql, array($optid, $store_id, $optval));
 		return $optval_id;
 	}
 
@@ -622,7 +623,6 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 			}
 		}
 		unset($matches);
-
 
 		//replacing expr values
 		while(preg_match("|\{\{\s*(.*?)\s*\}\}|",$pvalue,$matches))
@@ -916,7 +916,7 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 			$is_in_stock=isset($item["is_in_stock"])?$item["is_in_stock"]:($item["qty"]>$mqty?1:0);
 			$item["is_in_stock"]=$is_in_stock;
 		}
-		#take only stock columns that are initem after item update
+		#take only stock columns that are in item after item update
 		$common=array_intersect(array_keys($item),$scols);
 
 		#create stock item line if needed
@@ -1000,7 +1000,7 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 	/**
 	 * assign categories for a given product id from values
 	 * categories should already be created & csv values should be as the ones
-	 * given in the magento export (ie:comma separated ids, minus 1,2)
+	 * given in the magento export (ie: comma separated ids, minus 1,2)
 	 * @param int $pid : product id
 	 * @param array $item : attribute values for product indexed by attribute_code
 	 */
@@ -1488,10 +1488,9 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 		$columns=array_intersect(array_keys($item), $this->getProdCols());
 		$values=$this->filterkvarr($item, $columns);
 
-		$sql="UPDATE`$tname` SET ".$this->arr2update($values). " WHERE entity_id=?";
+		$sql = "UPDATE `$tname` SET ".$this->arr2update($values)." WHERE entity_id=?";
 
 		$this->update($sql,array_merge(array_values($values),array($pid)));
-
 	}
 
 	public function getProductEntityType()
