@@ -216,7 +216,7 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 	 *
 	 * gets attribute metadata from DB and put it in attribute metadata caches
 	 * @param array $cols list of attribute codes to get metadata from
-	 *if in this list, some values are not attribute code, no metadata will be cached.
+	 * if in this list, some values are not attribute code, no metadata will be cached.
 	 */
 	public function initAttrInfos($cols)
 	{
