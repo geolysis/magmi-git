@@ -200,8 +200,8 @@ class Magmi_ProductImportEngine extends Magmi_Engine
 	public function checkRequired($cols)
 	{
 		$eav_attr=$this->tablename("eav_attribute");
-		$sql="SELECT attribute_code FROM $eav_attr WHEREis_required=1
-		AND frontend_input!='' AND frontend_label!='' AND entity_type_id=?";
+		$sql = "SELECT attribute_code FROM $eav_attr"
+			." WHERE is_required=1 AND frontend_input!='' AND frontend_label!='' AND entity_type_id=?";
 		$required=$this->selectAll($sql,$this->prod_etype);
 		$reqcols=array();
 		foreach($required as $line)
